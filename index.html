@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anak Jupri Ulang Taun Njir</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1abc9c, #16a085, #48c9b0); /* gradasi biru tosca */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      color: #333;
+      overflow: hidden;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 400px;
+      animation: fadeIn 2s ease-in-out;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      color: #1abc9c;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      min-height: 60px; /* biar teks ga loncat */
+    }
+
+    p {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+
+    .balloon {
+      font-size: 2em;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Tombol musik */
+    .music-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background: #1abc9c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .music-btn:hover {
+      background: #16a085;
+    }
+
+    /* Canvas confetti */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <!-- Musik -->
+  <audio id="music" loop>
+    <source src="https://files.catbox.moe/b67x3y.mp3" type="audio/mpeg">
+    Browser kamu tidak mendukung audio.
+  </audio>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti"></canvas>
+
+  <div class="card">
+    <div class="balloon">🐸👾🤖</div>
+    <h1 id="typewriter"></h1>
+    <p>Selamat Ulang Tahun Yang Ke 15 Anak Jupri🥳</p>
+    <p>Anak Baik Harus Berbagi Yaa 😜</p>
+    <p>Kalau Orang Minta Jajan Dikasih🤪</p>
+    <div class="balloon">🙈🙉🙊</div>
+    <button class="music-btn" onclick="toggleMusic()">▶️ Play Musik</button>
+  </div>
+
+  <script>
+    const music = document.getElementById("music");
+    const btn = document.querySelector(".music-btn");
+
+    function toggleMusic() {
+      if (music.paused) {
+        music.play();
+        btn.textContent = "⏸️ Pause Musik";
+      } else {
+        music.pause();
+        btn.textContent = "▶️ Play Musik";
+      }
+    }
+
+    // Confetti Effect
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const confetti = [];
+    const colors = ["#1abc9c", "#16a085", "#48c9b0", "#2ecc71", "#f1c40f"];
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    class Confetto {
+      constructor() {
+        this.x = random(0, canvas.width);
+        this.y = random(-20, canvas.height);
+        this.size = random(5, 10);
+        this.color = colors[Math.floor(random(0, colors.length))];
+        this.speed = random(2, 5);
+        this.angle = random(0, 2 * Math.PI);
+      }
+
+      update() {
+        this.y += this.speed;
+        this.x += Math.sin(this.angle) * 2;
+        if (this.y > canvas.height) {
+          this.y = -10;
+          this.x = random(0, canvas.width);
+        }
+      }
+
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.size, this.size);
+      }
+    }
+
+    for (let i = 0; i < 150; i++) {
+      confetti.push(new Confetto());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach(c => {
+        c.update();
+        c.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Typewriter Effect
+    const text = "Selamat Ulang Tahun Anak Jupri";
+    let i = 0;
+    function typeWriter() {
+      if (i < text.length) {
+        document.getElementById("typewriter").textContent += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, 120); // kecepatan ngetik
+      }
+    }
+    typeWriter();
+  </script>
+</body>
+</html>
